@@ -1,0 +1,1 @@
+.\TensorRTSample.exe .\resnet50.onnx .\turkish_coffee.jpg > output.txt

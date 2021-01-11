@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}" ${CMAKE_MODULE_PATH})
+
+project(TensorRTSample)
+
+set(CMAKE_PREFIX_PATH "C:/NVIDIA/TensorRT-7.2.1.6.Windows10.x86_64.cuda-10.2.cudnn8.0/TensorRT-7.2.1.6/lib/")
+set(TensorRT_INCLUDE_DIR "C:/NVIDIA/TensorRT-7.2.1.6.Windows10.x86_64.cuda-10.2.cudnn8.0/TensorRT-7.2.1.6/include/")
+find_package(Threads)
+set(CUDA_VERSION 10.1)
+find_package(CUDA ${CUDA_VERSION} EXACT REQUIRED)
+set(OPENCV_MIN_VERSION "4.1.1")
+set (OPEN_CV_PATH "C:/Code/3rdParty/OpenCV_4.1.1_WithCuda/")
+set (OPEN_CV_BIN "C:/Code/3rdParty/OpenCV_4.1.1_WithCuda/x64/vc15/bin")
+find_package(OpenCV ${OPENCV_MIN_VERSION} REQUIRED PATHS ${OPEN_CV_PATH})
+set(TENSORT_RT_LIB "C:/NVIDIA/TensorRT-7.2.1.6.Windows10.x86_64.cuda-10.2.cudnn8.0/TensorRT-7.2.1.6/lib")
+find_package(TensorRT REQUIRED)
+
+# TARGETS --------------------------------------------------------------------------------------------------------------
+add_executable(${PROJECT_NAME} trt_sample.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS} ${TensorRT_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} ${CUDA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${TensorRT_LIBRARIES})
+
+if(WIN32)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+#set(CUDNN_PATH "C:/NVIDIA Corporation/cudnn-10.1-windows10-x64-v7.6.5.32/cuda/bin")
+set(CUDNN_PATH "C:/NVIDIA/cudnn-10.2-windows10-x64-v8.0.5.39/cuda/bin")
+set(DEBUGGER_PATH "PATH=%PATH%;${CUDNN_PATH};${OPEN_CV_BIN};${TENSORT_RT_LIB}")
+set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_ENVIRONMENT "${DEBUGGER_PATH}")
+endif()
